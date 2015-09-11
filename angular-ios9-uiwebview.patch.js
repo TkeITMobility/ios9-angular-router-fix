@@ -30,38 +30,40 @@
  * License: MIT
  */
 
-angular.module('ngIOS9UIWebViewPatch', ['ng']).decorator('$browser', ['$delegate', '$window', function($delegate, $window) {
+angular.module('ngIOS9UIWebViewPatch', ['ng']).config(function($provide) {
+  $provide.decorator('$browser', ['$delegate', '$window', function($delegate, $window) {
 
-  if (isIOS9UIWebView($window.navigator.userAgent)) {
-    return applyIOS9Shim($delegate);
-  }
-
-  return $delegate;
-
-  function isIOS9UIWebView(userAgent) {
-    return /(iPhone|iPad|iPod) OS 9_\d/.test(userAgent) && !/Version\/9\./.test(userAgent);
-  }
-
-  function applyIOS9Shim(browser) {
-    var pendingLocationUrl = null;
-    var patchedBrowser = Object.create(browser);
-
-    patchedBrowser.url = function() {
-      if (arguments.length) {
-        pendingLocationUrl = arguments[0];
-        return browser.url.apply(patchedBrowser, arguments);
-      }
-
-      return pendingLocationUrl || browser.url();
-    };
-
-    window.addEventListener('popstate', clearPendingLocationUrl, false);
-    window.addEventListener('hashchange', clearPendingLocationUrl, false);
-
-    function clearPendingLocationUrl() {
-      pendingLocationUrl = null;
+    if (isIOS9UIWebView($window.navigator.userAgent)) {
+      return applyIOS9Shim($delegate);
     }
 
-    return patchedBrowser;
-  }
-}]);
+    return $delegate;
+
+    function isIOS9UIWebView(userAgent) {
+      return /(iPhone|iPad|iPod) OS 9_\d/.test(userAgent) && !/Version\/9\./.test(userAgent);
+    }
+
+    function applyIOS9Shim(browser) {
+      var pendingLocationUrl = null;
+      var patchedBrowser = Object.create(browser);
+
+      patchedBrowser.url = function() {
+        if (arguments.length) {
+          pendingLocationUrl = arguments[0];
+          return browser.url.apply(patchedBrowser, arguments);
+        }
+
+        return pendingLocationUrl || browser.url();
+      };
+
+      window.addEventListener('popstate', clearPendingLocationUrl, false);
+      window.addEventListener('hashchange', clearPendingLocationUrl, false);
+
+      function clearPendingLocationUrl() {
+        pendingLocationUrl = null;
+      }
+
+      return patchedBrowser;
+    }
+  }]);
+});
