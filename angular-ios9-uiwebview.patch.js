@@ -1,4 +1,6 @@
 /**
+ * ============================  angular-ios9-uiwebview.patch.js v1.0.3 ============================
+ * 
  * This patch works around iOS9 UIWebView regression that causes infinite digest errors in Angular.
  *
  * The patch can be applied to Angular 1.2.0 – 1.4.5. Newer versions of Angular have the workaround baked in.
@@ -40,7 +42,7 @@ angular.module('ngIOS9UIWebViewPatch', ['ng']).config(function($provide) {
     return $delegate;
 
     function isIOS9UIWebView(userAgent) {
-      return /(iPhone|iPad|iPod) OS 9_\d/.test(userAgent) && !/Version\/9\./.test(userAgent);
+      return /(iPhone|iPad|iPod).* OS 9_\d/.test(userAgent) && !/Version\/9\./.test(userAgent);
     }
 
     function applyIOS9Shim(browser) {
