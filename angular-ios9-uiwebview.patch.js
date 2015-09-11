@@ -1,12 +1,14 @@
 /**
- * ============================  angular-ios9-uiwebview.patch.js v1.0.3 ============================
- * 
- * This patch works around iOS9 UIWebView regression that causes infinite digest errors in Angular.
+ * ==================  angular-ios9-uiwebview.patch.js v1.1.0 ==================
  *
- * The patch can be applied to Angular 1.2.0 – 1.4.5. Newer versions of Angular have the workaround baked in.
+ * This patch works around iOS9 UIWebView regression that causes infinite digest
+ * errors in Angular.
  *
- * To apply this patch load/bundle this file with your application and add a dependency on the "ngIOS9Patch" module
- * to your main app module.
+ * The patch can be applied to Angular 1.2.0 – 1.4.5. Newer versions of Angular
+ * have the workaround baked in.
+ *
+ * To apply this patch load/bundle this file with your application and add a
+ * dependency on the "ngIOS9Patch" module to your main app module.
  *
  * For example:
  *
@@ -47,15 +49,15 @@ angular.module('ngIOS9UIWebViewPatch', ['ng']).config(function($provide) {
 
     function applyIOS9Shim(browser) {
       var pendingLocationUrl = null;
-      var patchedBrowser = Object.create(browser);
+      var originalUrlFn= browser.url;
 
-      patchedBrowser.url = function() {
+      browser.url = function() {
         if (arguments.length) {
           pendingLocationUrl = arguments[0];
-          return browser.url.apply(patchedBrowser, arguments);
+          return originalUrlFn.apply(browser, arguments);
         }
 
-        return pendingLocationUrl || browser.url();
+        return pendingLocationUrl || originalUrlFn.apply(browser, arguments);
       };
 
       window.addEventListener('popstate', clearPendingLocationUrl, false);
@@ -65,7 +67,7 @@ angular.module('ngIOS9UIWebViewPatch', ['ng']).config(function($provide) {
         pendingLocationUrl = null;
       }
 
-      return patchedBrowser;
+      return browser;
     }
   }]);
 });
