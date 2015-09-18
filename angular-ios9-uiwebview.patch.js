@@ -8,7 +8,7 @@
  * have the workaround baked in.
  *
  * To apply this patch load/bundle this file with your application and add a
- * dependency on the "ngIOS9Patch" module to your main app module.
+ * dependency on the "ngIOS9UIWebViewPatch" module to your main app module.
  *
  * For example:
  *
@@ -34,7 +34,9 @@
  * License: MIT
  */
 
-angular.module('ngIOS9UIWebViewPatch', ['ng']).config(function($provide) {
+angular.module('ngIOS9UIWebViewPatch', ['ng']).config(['$provide', function($provide) {
+  'use strict';
+
   $provide.decorator('$browser', ['$delegate', '$window', function($delegate, $window) {
 
     if (isIOS9UIWebView($window.navigator.userAgent)) {
@@ -70,4 +72,4 @@ angular.module('ngIOS9UIWebViewPatch', ['ng']).config(function($provide) {
       return browser;
     }
   }]);
-});
+}]);
